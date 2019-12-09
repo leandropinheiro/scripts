@@ -1,0 +1,27 @@
+#!/bin/bash
+
+file=$1
+echo "Arquivo Origem: "${file}
+
+i_charset=$(file -i ${file} | cut -d';' -f2 | sed -e s/^' charset='//)
+i_charset=${i_charset^^}
+
+echo "Codificação Original: "${i_charset}
+
+base_name=$(basename ${file} .srt)
+base_name=$(basename ${base_name} .pt-BR)
+temp_name=${base_name}"_tmp.srt"
+final_name=${base_name}".pt-BR.srt"
+
+iconv -f ${i_charset} -t UTF-8//TRANSLIT ${file} -o ${temp_name}
+
+o_charset=$(file -i ${temp_name} | cut -d';' -f2 | sed -e s/^' charset='//)
+o_charset=${o_charset^^}
+
+echo "Codificação Final: "${o_charset}
+
+rm ${file}
+
+mv ${temp_name} ${final_name}
+
+chmod 777 ${final_name}

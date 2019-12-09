@@ -1,0 +1,11 @@
+#!/bin/bash
+echo "-------------> "$(date)
+echo
+echo "SERIES"
+echo
+/usr/local/bin/subliminal --legendastv GaliusBaltar w4s84xoOfqQK download -v -l pt-BR -e utf8 -p legendastv -a 5w /net/tank/mnt/tank/media/videos/SERIES/
+echo
+echo "FILMES"
+echo
+/usr/local/bin/subliminal --legendastv GaliusBaltar w4s84xoOfqQK download -v -l pt-BR -e utf8 -p legendastv -a 5w /net/tank/mnt/tank/media/videos/FILMES*/
+echo
