@@ -43,7 +43,7 @@ for file in ./MVI_*.MP4; do
     if [ ! -f "$editname" ]; then
     /bin/ffmpeg -i ${file} ${MAP} ${FLIP} ${META_COPY} ${CODECV_PRORES1} ${CODECA_COPY} ${editname}
     sleep 5
-    /bin/exiftool -api LargeFileSupport=1 -TagsFromFile ${file} ${editname}_temp
+    /bin/exiftool -api LargeFileSupport=1 -TagsFromFile ${file} ${editname}
     rm ${editname}_original
     mv 
     fi
@@ -57,7 +57,7 @@ for file in ./*.mkv; do
     if [ ! -f "$editname" ]; then
     /bin/ffmpeg -i ${file} ${MAP} ${META_COPY} ${CODECV_PRORES0} ${CODECA_COPY} ${editname}
     sleep 5
-    /bin/exiftool -api LargeFileSupport=1 -TagsFromFile ${file} ${editname}_temp
+    /bin/exiftool -api LargeFileSupport=1 -TagsFromFile ${file} ${editname}
     rm ${editname}_original
     fi
 done
