@@ -1,0 +1,58 @@
+#!/bin/bash
+
+#FLIP 
+
+FLIP='-vf "hflip,vflip"'
+
+#CODEC CONFIG
+
+CODECV_DNXHD="-c:v dnxhd -b:v 50M -pix_fmt yuv422p10le"
+CODECV_PRORES0="-c:v prores_ks -profile:v 1"
+CODECV_PRORES1="-c:v prores_ks -profile:v 1"
+CODECV_MPEG4="-c:v mpeg4 -q:v 3"
+CODECA_WAV="-c:a pcm_s16le"
+CODECA_COPY="-c:a copy"
+
+#MAP
+
+MAP="-map 0:v -map 0:a"
+
+#METATADA
+
+META_COPY="-map_metadata 0 -movflags use_metadata_tags"
+
+#CONVERT FILES FROM CANON REBEL
+
+for file in ./MVI_*.MOV; do
+    basename=$(basename $file .MOV)
+    editname=${basename}_t5i_edit.mov
+    if [ ! -f "$editname" ]; then
+    /bin/ffmpeg -i ${file} ${MAP} ${META_COPY} ${CODECV_PRORES1} ${CODECA_COPY} ${editname}
+    /bin/exiftool -TagsFromFile ${file} ${editname}
+    rm ${editname}_original
+    fi
+done
+
+#CONVERT FILES FROM CANON R800
+
+for file in ./MVI_*.MP4; do
+    basename=$(basename $file .MP4)
+    editname=${basename}_r800_edit.mov
+    if [ ! -f "$editname" ]; then
+    /bin/ffmpeg -i ${file} ${MAP} ${FLIP} ${META_COPY} ${CODECV_PRORES1} ${CODECA_COPY} ${editname}
+    /bin/exiftool -TagsFromFile ${file} ${editname}
+    rm ${editname}_original
+    fi
+done
+
+#CONVERT FILES FROM OBS
+
+for file in ./*.mkv; do
+    basename=$(basename $file .mkv)
+    editname=${basename}_obs_edit.mov
+    if [ ! -f "$editname" ]; then
+    /bin/ffmpeg -i ${file} ${MAP} ${META_COPY} ${CODECV_PRORES0} ${CODECA_COPY} ${editname}
+    /bin/exiftool -TagsFromFile ${file} ${editname}
+    rm ${editname}_original
+    fi
+done
