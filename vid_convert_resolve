@@ -7,8 +7,8 @@ FLIP='-vf "hflip,vflip"'
 #CODEC CONFIG
 
 CODECV_DNXHD="-c:v dnxhd -b:v 50M -pix_fmt yuv422p10le"
-CODECV_PRORES0="-c:v prores_ks -profile:v 1"
-CODECV_PRORES1="-c:v prores_ks -profile:v 1"
+CODECV_PRORES0="-c:v prores -profile:v 0 -pix_fmt yuv422p10le"
+CODECV_PRORES1="-c:v prores -profile:v 1 -pix_fmt yuv422p10le"
 CODECV_MPEG4="-c:v mpeg4 -q:v 3"
 CODECA_WAV="-c:a pcm_s16le"
 CODECA_COPY="-c:a copy"
@@ -28,8 +28,10 @@ for file in ./MVI_*.MOV; do
     editname=${basename}_t5i_edit.mov
     if [ ! -f "$editname" ]; then
     /bin/ffmpeg -i ${file} ${MAP} ${META_COPY} ${CODECV_PRORES1} ${CODECA_COPY} ${editname}
-    /bin/exiftool -TagsFromFile ${file} ${editname}
+    sleep 5
+    /bin/exiftool -api LargeFileSupport=1 -TagsFromFile ${file} ${editname}
     rm ${editname}_original
+    mv 
     fi
 done
 
@@ -40,8 +42,10 @@ for file in ./MVI_*.MP4; do
     editname=${basename}_r800_edit.mov
     if [ ! -f "$editname" ]; then
     /bin/ffmpeg -i ${file} ${MAP} ${FLIP} ${META_COPY} ${CODECV_PRORES1} ${CODECA_COPY} ${editname}
-    /bin/exiftool -TagsFromFile ${file} ${editname}
+    sleep 5
+    /bin/exiftool -api LargeFileSupport=1 -TagsFromFile ${file} ${editname}_temp
     rm ${editname}_original
+    mv 
     fi
 done
 
@@ -52,7 +56,8 @@ for file in ./*.mkv; do
     editname=${basename}_obs_edit.mov
     if [ ! -f "$editname" ]; then
     /bin/ffmpeg -i ${file} ${MAP} ${META_COPY} ${CODECV_PRORES0} ${CODECA_COPY} ${editname}
-    /bin/exiftool -TagsFromFile ${file} ${editname}
+    sleep 5
+    /bin/exiftool -api LargeFileSupport=1 -TagsFromFile ${file} ${editname}_temp
     rm ${editname}_original
     fi
 done
