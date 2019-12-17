@@ -1,5 +1,9 @@
 #!/bin/bash
 
+#TEMP FOLDER
+
+TEMP="/tmp/"
+
 #FLIP 
 
 FLIP="-vf hflip,vflip"
@@ -27,9 +31,12 @@ for file in ./MVI_*.MOV; do
     basename=$(basename "${file}" .MOV)
     editname="${basename}"_t5i_edit.mov
     if [ ! -f "$editname" ]; then
-    /bin/ffmpeg -i "${file}" ${MAP} ${META_COPY} ${CODECV_PRORES1} ${CODECA_COPY} "${editname}"
-    /bin/exiftool -api LargeFileSupport=1 -TagsFromFile "${file}" "${editname}"
-    rm "${editname}_original" 
+    rsync -rahvP "${file}" "${TEMP}${file}"
+    /bin/ffmpeg -y -i "${TEMP}${file}" ${MAP} ${META_COPY} ${CODECV_PRORES1} ${CODECA_COPY} "${TEMP}${editname}"
+    /bin/exiftool -api LargeFileSupport=1 -TagsFromFile "${TEMP}${file}" "${TEMP}${editname}"
+    rm -vf "${TEMP}${editname}_original"
+    rm -vf "${TEMP}${file}"
+    mv -vf "${TEMP}${editname}" "${editname}"
     fi
 done
 
@@ -39,9 +46,13 @@ for file in ./MVI_*.MP4; do
     basename=$(basename "${file}" .MP4)
     editname="${basename}"_r800_edit.mov
     if [ ! -f "$editname" ]; then
-    /bin/ffmpeg -i "${file}" ${MAP} ${FLIP} ${META_COPY} ${CODECV_PRORES1} ${CODECA_WAV} "${editname}"
-    /bin/exiftool -api LargeFileSupport=1 -TagsFromFile "${file}" "${editname}"
-    rm "${editname}_original" 
+    rsync -rahvP "${file}" "${TEMP}${file}"
+    /bin/ffmpeg -y -i "${TEMP}${file}" ${MAP} ${FLIP} ${META_COPY} ${CODECV_PRORES1} ${CODECA_WAV} "${TEMP}${editname}"
+    #/bin/ffmpeg -y -i "${TEMP}${file}" ${MAP} ${META_COPY} ${CODECV_PRORES1} ${CODECA_WAV} "${TEMP}${editname}"
+    /bin/exiftool -api LargeFileSupport=1 -TagsFromFile "${TEMP}${file}" "${TEMP}${editname}"
+    rm -vf "${TEMP}${editname}_original"
+    rm -vf "${TEMP}${file}"
+    mv -vf "${TEMP}${editname}" "${editname}"
     fi
 done
 
@@ -51,52 +62,55 @@ for file in ./OBS_*.mkv; do
     basename=$(basename "$file" .mkv)
     editname="${basename}"_edit.mov
     if [ ! -f "$editname" ]; then
-    /bin/ffmpeg -i "${file}" ${MAP} ${META_COPY} ${CODECV_PRORES0} ${CODECA_WAV} "${editname}"
-    /bin/exiftool -api LargeFileSupport=1 -TagsFromFile "${file}" "${editname}"
-    rm "${editname}_original"
+    rsync -rahvP "${file}" "${TEMP}${file}"
+    /bin/ffmpeg -y -i "${TEMP}${file}" ${MAP} ${META_COPY} ${CODECV_PRORES0} ${CODECA_WAV} "${TEMP}${editname}"
+    /bin/exiftool -api LargeFileSupport=1 -TagsFromFile "${TEMP}${file}" "${TEMP}${editname}"
+    rm -vf "${TEMP}${editname}_original"
+    rm -vf "${TEMP}${file}"
+    mv -vf "${TEMP}${editname}" "${editname}"
     fi
 done
 
 #CONVERT FILES FROM YOUTUBE-DL
 
-for file in ./*.webm; do
-    basename=$(basename "$file" .webm)
-    editname="${basename}_.mov"
-    if [ ! -f "$editname" ]; then
-    /bin/ffmpeg -i "${file}" ${MAP} ${META_COPY} ${CODECV_MPEG4} ${CODECA_WAV} "${editname}"
-    /bin/exiftool -api LargeFileSupport=1 -TagsFromFile "${file}" "${editname}"
-    rm "${editname}_original"
-    fi
-done
+#for file in ./*.webm; do
+#    basename=$(basename "$file" .webm)
+#    editname="${basename}_.mov"
+#    if [ ! -f "$editname" ]; then
+#    /bin/ffmpeg -i "${file}" ${MAP} ${META_COPY} ${CODECV_MPEG4} ${CODECA_WAV} "${editname}"
+#    /bin/exiftool -api LargeFileSupport=1 -TagsFromFile "${file}" "${editname}"
+#    rm "${editname}_original"
+#    fi
+#done
 
-for file in ./*.mp4; do
-    basename=$(basename "$file" .mp4)
-    editname="${basename}_.mov"
-    if [ ! -f "$editname" ]; then
-    /bin/ffmpeg -i "${file}" ${MAP} ${META_COPY} ${CODECV_MPEG4} ${CODECA_WAV} "${editname}"
-    /bin/exiftool -api LargeFileSupport=1 -TagsFromFile "${file}" "${editname}"
-    rm "${editname}_original"
-    fi
-done
+#for file in ./*.mp4; do
+#    basename=$(basename "$file" .mp4)
+#    editname="${basename}_.mov"
+#    if [ ! -f "$editname" ]; then
+#    /bin/ffmpeg -i "${file}" ${MAP} ${META_COPY} ${CODECV_MPEG4} ${CODECA_WAV} "${editname}"
+#    /bin/exiftool -api LargeFileSupport=1 -TagsFromFile "${file}" "${editname}"
+#    rm "${editname}_original"
+#    fi
+#done
 
-for file in ./*.mkv; do
-    basename=$(basename "$file" .mkv)
-    editname="${basename}_.mov"
-    if [ ! -f "$editname" ]; then
-    /bin/ffmpeg -i "${file}" ${MAP} ${META_COPY} ${CODECV_MPEG4} ${CODECA_WAV} "${editname}"
-    /bin/exiftool -api LargeFileSupport=1 -TagsFromFile "${file}" "${editname}"
-    rm "${editname}_original"
-    fi
-done
+#for file in ./*.mkv; do
+#    basename=$(basename "$file" .mkv)
+#    editname="${basename}_.mov"
+#    if [ ! -f "$editname" ]; then
+#    /bin/ffmpeg -i "${file}" ${MAP} ${META_COPY} ${CODECV_MPEG4} ${CODECA_WAV} "${editname}"
+#    /bin/exiftool -api LargeFileSupport=1 -TagsFromFile "${file}" "${editname}"
+#    rm "${editname}_original"
+#    fi
+#done
 
-for file in ./*.mp3; do
-    basename=$(basename "$file" .mp3)
-    editname="${basename}_.wav"
-    if [ ! -f "$editname" ]; then
-    /bin/ffmpeg -i "${file}" ${CODECA_WAV} "${editname}"
-    /bin/exiftool -api LargeFileSupport=1 -TagsFromFile "${file}" "${editname}"
-    rm "${editname}_original"
-    fi
-done
+#for file in ./*.mp3; do
+#    basename=$(basename "$file" .mp3)
+#    editname="${basename}_.wav"
+#    if [ ! -f "$editname" ]; then
+#    /bin/ffmpeg -i "${file}" ${CODECA_WAV} "${editname}"
+#    /bin/exiftool -api LargeFileSupport=1 -TagsFromFile "${file}" "${editname}"
+#    rm "${editname}_original"
+#    fi
+#done
 
 #FIM
