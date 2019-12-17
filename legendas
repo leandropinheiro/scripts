@@ -3,9 +3,9 @@ echo "-------------> "$(date)
 echo
 echo "SERIES"
 echo
-/usr/local/bin/subliminal --legendastv $(cat ~/legendas_user) $(cat ~/lgendas_senha) download -v -l pt-BR -e utf8 -p legendastv -a 5w /net/tank/mnt/tank/media/videos/SERIES/
+/usr/local/bin/subliminal --legendastv $(cat ~/legendas_user) $(cat ~/legendas_senha) download -v -l pt-BR -e utf8 -p legendastv -a 5w /net/tank/mnt/tank/media/videos/SERIES/
 echo
 echo "FILMES"
 echo
-/usr/local/bin/subliminal --legendastv $(cat ~/legendas_user) $(cat ~/lgendas_senha) download -v -l pt-BR -e utf8 -p legendastv -a 5w /net/tank/mnt/tank/media/videos/FILMES*/
+/usr/local/bin/subliminal --legendastv $(cat ~/legendas_user) $(cat ~/legendas_senha) download -v -l pt-BR -e utf8 -p legendastv -a 5w /net/tank/mnt/tank/media/videos/FILMES*/
 echo
