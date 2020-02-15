@@ -1,0 +1,95 @@
+#!/bin/bash
+
+help()
+{
+echo "Usage:"
+echo
+echo "vid_concat -i input_file1 input_file2 ... input_fileN -o output_file"
+echo 
+echo "  -i              Specify a List of input files"
+echo "  -o              Specify a output file"
+echo "  -h ou --help    Display this help"
+echo
+
+exit 0
+}
+
+[ -z $@ ] && help
+
+param=($@)
+
+#echo ${param[@]}
+
+for i in "${param[@]}"
+do
+#    echo $i
+
+    case "$i" in
+         -i)
+            command="input"
+            ;;
+         -o)
+            command="output"
+            ;;
+         -h)
+	    help
+            ;;
+         --help)
+            help
+            ;;
+         *)
+            [ "$command" == "input" ] &&  infiles+=($i)
+            [ "$command" == "output" ] &&  outfile=$i
+    esac
+done
+
+echo "=============> Arquivos"
+echo
+
+echo "Input Files: "${infiles[@]}
+echo "Output File: "${outfile}
+echo
+
+touch temp_list.txt
+
+echo "=============> Gerando arquivo de lista"
+echo
+
+for i in "${infiles[@]}"
+do
+     echo "file ./"$i >> temp_list.txt
+done
+
+cat temp_list.txt
+echo
+
+echo "=============> Contatenando"
+echo
+
+ffmpeg -f concat -safe 0 -i temp_list.txt -c copy $outfile
+
+echo
+echo "=============> Removendo arquivos temporarios"
+echo
+
+rm -v temp_list.txt
+
+echo
+echo "=============> Terminado!"
+echo
+
+exit 0
+
+:help
+
+echo "usage:"
+echo
+echo "vid_concat -i input_file1 input_file2 ... input_fileN -o output_file"
+echo 
+echo "  -i		Specify a List of input files"
+echo "  -o		Specify a output file"
+echo "  -h ou --help	Display this help"
+echo
+
+exit 0
+

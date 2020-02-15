@@ -2,7 +2,7 @@
 
 #TEMP FOLDER
 
-TEMP="/tmp/"
+TEMP="/scratch/tmp/"
 
 #FLIP 
 
@@ -10,10 +10,10 @@ FLIP="-vf hflip,vflip"
 
 #CODEC CONFIG
 
-CODECV_DNXHD="-c:v dnxhd -b:v 50M -pix_fmt yuv422p10le"
+CODECV_DNXHD="-c:v dnxhd -profile:v dnxhr_sq -pix_fmt yuv422p"
 CODECV_PRORES0="-c:v prores -profile:v 0 -pix_fmt yuv422p10le"
 CODECV_PRORES1="-c:v prores -profile:v 1 -pix_fmt yuv422p10le"
-CODECV_MPEG4="-c:v mpeg4 -q:v 3"
+CODECV_MPEG4="-c:v mpeg4 -q:v 1"
 CODECA_WAV="-c:a pcm_s16le"
 CODECA_COPY="-c:a copy"
 
@@ -24,17 +24,20 @@ MAP="-map 0:v -map 0:a"
 #METATADA
 
 META_COPY="-map_metadata 0 -movflags use_metadata_tags"
+META_T5I='-Camera.ID=Canon EOS REBEL T5i'
+META_R800='-Producer=Canon Vixia R800'
+META_OBS='-Producer=OBS Studio'
 
 #CONVERT FILES FROM CANON REBEL
 
-for file in ./MVI_*.MOV; do
+for file in MVI_*.MOV; do
     basename=$(basename "${file}" .MOV)
     editname="${basename}"_t5i_edit.mov
     if [ ! -f "$editname" ]; then
     rsync -rahvP "${file}" "${TEMP}${file}"
-    /bin/ffmpeg -y -i "${TEMP}${file}" ${MAP} ${META_COPY} ${CODECV_PRORES1} ${CODECA_COPY} "${TEMP}${editname}"
-    /bin/exiftool -api LargeFileSupport=1 -TagsFromFile "${TEMP}${file}" "${TEMP}${editname}"
-    rm -vf "${TEMP}${editname}_original"
+    /bin/ffmpeg -y -i "${TEMP}${file}" ${MAP} ${META_COPY} ${CODECV_DNXHD} ${CODECA_COPY} "${TEMP}${editname}"
+    #/bin/exiftool -v -api LargeFileSupport=1 -TagsFromFile "${TEMP}${file}" "${TEMP}${eitname}"
+    #rm -vf "${TEMP}${file}_original"
     rm -vf "${TEMP}${file}"
     mv -vf "${TEMP}${editname}" "${editname}"
     fi
@@ -42,15 +45,15 @@ done
 
 #CONVERT FILES FROM CANON R800
 
-for file in ./MVI_*.MP4; do
+for file in MVI_*.MP4; do
     basename=$(basename "${file}" .MP4)
     editname="${basename}"_r800_edit.mov
     if [ ! -f "$editname" ]; then
     rsync -rahvP "${file}" "${TEMP}${file}"
-    /bin/ffmpeg -y -i "${TEMP}${file}" ${MAP} ${FLIP} ${META_COPY} ${CODECV_PRORES1} ${CODECA_WAV} "${TEMP}${editname}"
-    #/bin/ffmpeg -y -i "${TEMP}${file}" ${MAP} ${META_COPY} ${CODECV_PRORES1} ${CODECA_WAV} "${TEMP}${editname}"
-    /bin/exiftool -api LargeFileSupport=1 -TagsFromFile "${TEMP}${file}" "${TEMP}${editname}"
-    rm -vf "${TEMP}${editname}_original"
+    #/bin/ffmpeg -y -i "${TEMP}${file}" ${MAP} ${FLIP} ${META_COPY} ${CODECV_DNXHD} ${CODECA_WAV} "${TEMP}${editname}"
+    /bin/ffmpeg -y -i "${TEMP}${file}" ${MAP} ${META_COPY} ${CODECV_DNXHD} ${CODECA_WAV} "${TEMP}${editname}"
+    #/bin/exiftool -api LargeFileSupport=1 -TagsFromFile "${TEMP}${file}" "${TEMP}${editname}"
+    #rm -vf "${TEMP}${file}_original"
     rm -vf "${TEMP}${file}"
     mv -vf "${TEMP}${editname}" "${editname}"
     fi
@@ -58,14 +61,44 @@ done
 
 #CONVERT FILES FROM OBS
 
-for file in ./OBS_*.mkv; do
+for file in OBS_*.mkv; do
     basename=$(basename "$file" .mkv)
     editname="${basename}"_edit.mov
     if [ ! -f "$editname" ]; then
     rsync -rahvP "${file}" "${TEMP}${file}"
-    /bin/ffmpeg -y -i "${TEMP}${file}" ${MAP} ${META_COPY} ${CODECV_PRORES0} ${CODECA_WAV} "${TEMP}${editname}"
-    /bin/exiftool -api LargeFileSupport=1 -TagsFromFile "${TEMP}${file}" "${TEMP}${editname}"
-    rm -vf "${TEMP}${editname}_original"
+    /bin/ffmpeg -y -i "${TEMP}${file}" ${MAP} ${META_COPY} ${CODECV_MPEG4} ${CODECA_WAV} "${TEMP}${editname}"
+    #/bin/exiftool -api LargeFileSupport=1 -TagsFromFile "${TEMP}${file}" "${TEMP}${editname}"
+    #rm -vf "${TEMP}${editname}_original"
+    rm -vf "${TEMP}${file}"
+    mv -vf "${TEMP}${editname}" "${editname}"
+    fi
+done
+
+#CONVERT FILES FROM MG6
+
+for file in VID_*.mp4; do
+    basename=$(basename "$file" .mp4)
+    editname="${basename}"_edit.mov
+    if [ ! -f "$editname" ]; then
+    rsync -rahvP "${file}" "${TEMP}${file}"
+    /bin/ffmpeg -y -i "${TEMP}${file}" ${MAP} ${META_COPY} ${CODECV_DNXHD} ${CODECA_WAV} "${TEMP}${editname}"
+    #/bin/exiftool -api LargeFileSupport=1 -TagsFromFile "${TEMP}${file}" "${TEMP}${editname}"
+    #rm -vf "${TEMP}${editname}_original"
+    rm -vf "${TEMP}${file}"
+    mv -vf "${TEMP}${editname}" "${editname}"
+    fi
+done
+
+#CONVERT FILES FROM GOPRO HERO 8
+
+for file in GH*.MP4; do
+    basename=$(basename "$file" .MP4)
+    editname="${basename}"_edit.mov
+    if [ ! -f "$editname" ]; then
+    rsync -rahvP "${file}" "${TEMP}${file}"
+    /bin/ffmpeg -y -i "${TEMP}${file}" ${MAP} ${META_COPY} ${CODECV_MPEG} ${CO>
+    #/bin/exiftool -api LargeFileSupport=1 -TagsFromFile "${TEMP}${file}" "${TE>
+    #rm -vf "${TEMP}${editname}_original"
     rm -vf "${TEMP}${file}"
     mv -vf "${TEMP}${editname}" "${editname}"
     fi
