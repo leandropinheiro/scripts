@@ -96,7 +96,7 @@ for file in ./*.webm; do
     basename=$(basename "$file" .webm)
     editname="${basename}_.mov"
     if [ ! -f "$editname" ]; then
-    /bin/ffmpeg -i "${file}" ${MAP} ${META_COPY} ${CODECV_MPEG4} ${CODECA_WAV} "${editname}"
+    /bin/ffmpeg -i "${file}" ${MAP} ${META_COPY} ${CODECV_PRORES0} ${CODECA_WAV} "${editname}"
     /bin/exiftool -api LargeFileSupport=1 -TagsFromFile "${file}" "${editname}"
     rm "${editname}_original"
     fi
