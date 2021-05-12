@@ -60,18 +60,22 @@ for file in MVI_*.MP4; do
     fi
 done
 
-#CONVERT FILES FROM OBS
+#CONVERT FILES FROM OBS_2x2
 
-for file in OBS_*.mkv; do
+for file in OBS_2x2*.mkv; do
     basename=$(basename "$file" .mkv)
-    editname="${basename}"_edit.mov
-    if [ ! -f "$editname" ]; then
-    rsync -rahvP "${file}" "${TEMP}${file}"
-    /bin/ffmpeg -y -i "${TEMP}${file}" ${MAP} ${META_COPY} ${CODECV_COPY} ${CODECA_COPY} "${TEMP}${editname}"
+    reditname="${basename}"_right.mov
+    leditname="${basename}"_left.mov
+    if ! [ -f "$leditname" ]; then
+    #rsync -rahvP "${file}" "${TEMP}${file}"
+        /bin/ffmpeg -y -i "$file" ${MAP} ${META_COPY} ${CODECV_MPEG4} ${CODECA_COPY} -filter:v "crop=in_w/2:in_h:0:0" "${leditname}"
+    fi
+    if ! [ -f "$reditname" ]; then
+        /bin/ffmpeg -y -i "$file" ${MAP} ${META_COPY} ${CODECV_MPEG4} ${CODECA_COPY} -filter:v "crop=in_w/2:in_h:in_w/2:0" "${reditname}"
     #/bin/exiftool -api LargeFileSupport=1 -TagsFromFile "${TEMP}${file}" "${TEMP}${editname}"
     #rm -vf "${TEMP}${editname}_original"
-    rm -vf "${TEMP}${file}"
-    mv -vf "${TEMP}${editname}" "${editname}"
+    #rm -vf "${TEMP}${file}"
+    #mv -vf "${TEMP}${editname}" "${editname}"
     fi
 done
 
